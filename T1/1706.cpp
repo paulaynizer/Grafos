@@ -11,6 +11,7 @@ int color[1001], d[1001], p[1001], f[1001], t,vertex, edge;
 char nota[1001];
 int NIL = numeric_limits<int>::min();
 
+
 class Grafo
 {
 	int V; // numero de vertices
@@ -21,7 +22,8 @@ class Grafo
 	void adicionarAresta(int v1, int v2); // adiciona uma aresta no grafo
     void DFS();
     void DFSVisit(int u);
-    void varinhaMagica(int u, int v);
+    //void varinhaMagica(int u, int v);
+    //bool findPath(int s, int v);
 };
 
 Grafo::Grafo(int V)
@@ -34,20 +36,12 @@ void Grafo::adicionarAresta(int v1, int v2)
 {
 	// adiciona vertice v2 a  lista de vertices adjacentes de v1
 	adj[v1].push_back(v2);
+
 }
 
-void Grafo :: varinhaMagica(int u, int v){
-	if(nota[adj[u][v]]=='B'&&nota[u]=='A'){
-    		nota[adj[u][v]]='A';
-			nota[u]='B';	
-	}else if(nota[u]=='B'&&nota[adj[u][v]]=='A'){
+void varinhaMagica(int u,int v){
 		nota[u]='A';
-		nota[adj[u][v]]='B';
-	}
-	else if(nota[u]=='B'&&nota[adj[u][v]]=='B'){
-		nota[u]='A';
-		nota[adj[u][v]]='A';
-	}
+		nota[v]='A';
 	
 }
 
@@ -63,12 +57,23 @@ void Grafo::DFS() {
     for(int u=1; u<=vertex; u++) {
        
         if(color[u] == WHITE) {
-        
+        	
             DFSVisit(u);
             
         }
     }
     
+}
+bool findPath(int s, int v){
+	if (v==s){
+		return true;
+	}
+	else if(p[v]==NIL){
+		return false;
+	}
+	else{
+		findPath(s,p[v]);
+	}
 }
 
 void Grafo :: DFSVisit(int u) {
@@ -85,15 +90,7 @@ void Grafo :: DFSVisit(int u) {
             
             p[adj[u][v]] = u;
             DFSVisit(adj[u][v]);
-            //cout<<"nota[u]"<<nota[u]<<endl;
-            //cout<<"(nota[adj[u][adj[u].size()-1]]:"<<nota[adj[u][adj[u].size()-1]]<<endl;
-            if((nota[adj[u][v]]!='A')||(nota[u]!='A')){
-    			//cout<<"u: "<<u<<" faz troca"<<endl;
-    			varinhaMagica(u, v);
-			}
-			else{
-				//cout<<"u: "<<u<<"ta ok"<<endl;
-			}
+            
         }
         
     }
@@ -110,7 +107,7 @@ int main()
     int n;//numero de vertices
     int m;//numero de arestas
  
-    freopen("entrada.txt", "r", stdin);
+    //freopen("entrada.txt", "r", stdin);
 	while (cin>> n>>m)
     {
         bool possivel=true;
@@ -118,7 +115,7 @@ int main()
        vertex=n;
         char notas[1001];
         int u, v;
-        
+        int hasB;
         for(int i=1;i<=vertex;i++){
             cin>>nota[i];
         }
@@ -127,6 +124,27 @@ int main()
             grafo.adicionarAresta(u,v);
         }
         grafo.DFS();
+
+        
+        for(int u=1;u<=vertex;u++){
+        	if(nota[u]=='B'){
+        		if(hasB){
+        		//cout<<"hasB"<<hasB<<endl;
+        		//cout<<"U"<<u<<endl;
+        		
+					if(findPath(hasB,u)){
+						//cout<<"entraa"<<endl;
+						
+						varinhaMagica(u, hasB);
+					}	
+				}
+    			else{
+    				//cout<<"entraaq"<<endl;
+    				hasB=u;
+				}
+			}
+        	
+		}
         for(int i=1; i<=vertex; i++) {
             //printf("v%d (%d/%d)\n", i, d[i], f[i]);
             //cout<<"nota:"<<nota[i]<<endl;
