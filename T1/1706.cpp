@@ -3,6 +3,9 @@
 #include <iostream>
 #include <vector>
 #include <limits>
+#include <queue>
+
+
 
 using namespace std;
 
@@ -10,6 +13,8 @@ enum Cor {WHITE,GRAY,BLACK};
 int color[1001], d[1001], p[1001], f[1001], t,vertex, edge;
 char nota[1001];
 int NIL = numeric_limits<int>::min();
+int INF = numeric_limits<int>::max();
+bool possivel;
 
 
 class Grafo
@@ -20,10 +25,9 @@ class Grafo
     public:
 	Grafo(int V); // construtor
 	void adicionarAresta(int v1, int v2); // adiciona uma aresta no grafo
-    void DFS();
-    void DFSVisit(int u);
-    //void varinhaMagica(int u, int v);
-    //bool findPath(int s, int v);
+    bool BFS(int s, int k);
+    void varinhaMagica(int v, int u);
+  
 };
 
 Grafo::Grafo(int V)
@@ -34,72 +38,59 @@ Grafo::Grafo(int V)
 
 void Grafo::adicionarAresta(int v1, int v2)
 {
-	// adiciona vertice v2 a  lista de vertices adjacentes de v1
+	// adiciona vertice v2 a  lista de vertices adjacentes de v1
 	adj[v1].push_back(v2);
-
-}
-
-void varinhaMagica(int u,int v){
-		nota[u]='A';
-		nota[v]='A';
 	
+
+}
+void Grafo::varinhaMagica(int v, int u)
+{
+	nota[v]='A';
+	nota[u]='A';
+	
+
 }
 
-
-void Grafo::DFS() {
-   
+bool Grafo :: BFS(int s, int k){
+    if (s== k){
+                return true;
+    }
     for(int u=0; u<=vertex; u++) {
-        
         color[u] = WHITE;
+        d[u] = INF;
         p[u] = NIL;
     }
-    t = 0;
-    for(int u=1; u<=vertex; u++) {
-       
-        if(color[u] == WHITE) {
-        	
-            DFSVisit(u);
-            
-        }
-    }
-    
-}
-bool findPath(int s, int v){
-	if (v==s){
-		return true;
-	}
-	else if(p[v]==NIL){
-		return false;
-	}
-	else{
-		findPath(s,p[v]);
-	}
-}
 
-void Grafo :: DFSVisit(int u) {
- 
-    t = t + 1;
-    d[u] = t;
-    color[u] = GRAY;
-   
-    
-    for(int v=0; v<adj[u].size(); v++) {
+    color[s] = GRAY;
+    d[s] = 0;
+    p[s] = NIL;
+
+    queue<int> Q; Q.push(s);
+
+    while( !Q.empty()) {
         
-     
-        if(color[adj[u][v]] == WHITE) {
-            
-            p[adj[u][v]] = u;
-            DFSVisit(adj[u][v]);
-            
+        int u = Q.front(); Q.pop();
+        
+        for(int v=0; v<adj[u].size(); v++) {
+            if (v== k){
+                //cout<<"entraaq"<<endl;
+                return true;
+            }
+            if(color[adj[u][v]] == WHITE) {
+                if (adj[u][v]== k){
+                    //cout<<"entraaq"<<endl;
+                    return true;
+                }
+                color[adj[u][v]] = GRAY;
+                d[adj[u][v]] = d[u] + v;
+                p[adj[u][v]] = u;
+                p[u] = adj[u][v];
+                Q.push(adj[u][v]);
+            }
         }
-        
+        color[u] = BLACK;
     }
-    color[u] = BLACK;
-    t = t + 1;
-    f[u] = t;
-   	
-    
-   
+    return false;
 }
 int main()
 {
@@ -107,57 +98,59 @@ int main()
     int n;//numero de vertices
     int m;//numero de arestas
  
-    //freopen("entrada.txt", "r", stdin);
+  
 	while (cin>> n>>m)
-    {
-        bool possivel=true;
+    {   
+    	
+        bool existe=false;
         Grafo grafo(n);
-       vertex=n;
+        vertex=n;
+
         char notas[1001];
         int u, v;
-        int hasB;
+        int hasB=0;
+        int cont=0;
         for(int i=1;i<=vertex;i++){
             cin>>nota[i];
         }
         for(int i =1;i<=m;i++){
             cin>>u>>v;
             grafo.adicionarAresta(u,v);
+            grafo.adicionarAresta(v,u);
         }
-        grafo.DFS();
-
-        
+      
         for(int u=1;u<=vertex;u++){
+        
         	if(nota[u]=='B'){
-        		if(hasB){
-        		//cout<<"hasB"<<hasB<<endl;
-        		//cout<<"U"<<u<<endl;
-        		
-					if(findPath(hasB,u)){
-						//cout<<"entraa"<<endl;
-						
-						varinhaMagica(u, hasB);
-					}	
-				}
-    			else{
-    				//cout<<"entraaq"<<endl;
-    				hasB=u;
-				}
+        	    cont++;
 			}
-        	
 		}
-        for(int i=1; i<=vertex; i++) {
-            //printf("v%d (%d/%d)\n", i, d[i], f[i]);
-            //cout<<"nota:"<<nota[i]<<endl;
-            if(nota[i]=='B'){
-            	possivel=false;
+        //se for par 
+        if(cont%2==0){
+            for(int u=1;u<=vertex;u++){
+                
+        	    if(nota[u]=='B'){
+        		    if(hasB){
+				existe=grafo.BFS(hasB,u);	    
+				hasB=0;
+					   
+				}
+    			    else{
+    				    hasB=u;
+			    }
 			}
+		    }
+		    if(existe==1){
+		        cout<<"Y"<<endl;
+		    }
+		    else{
+			    cout<<"N"<<endl;
+		    }
         }
-        if(possivel==true){
-        	cout<<"Y"<<endl;
-		}
-		else{
+        else{
 			cout<<"N"<<endl;
 		}
-	    
     }
+    return 0;
 }
+
