@@ -38,7 +38,7 @@ Grafo::Grafo(int V)
 
 void Grafo::adicionarAresta(int v1, int v2)
 {
-	// adiciona vertice v2 a  lista de vertices adjacentes de v1
+	
 	adj[v1].push_back(v2);
 	
 
@@ -102,7 +102,7 @@ int main()
 	while (cin>> n>>m)
     {   
     	
-        bool existe=false;
+        bool existe=true;
         Grafo grafo(n);
         vertex=n;
 
@@ -118,39 +118,43 @@ int main()
             grafo.adicionarAresta(u,v);
             grafo.adicionarAresta(v,u);
         }
-      
+      	//conta a quantidade de b
         for(int u=1;u<=vertex;u++){
-        
         	if(nota[u]=='B'){
         	    cont++;
 			}
 		}
         //se for par 
         if(cont%2==0){
-            for(int u=1;u<=vertex;u++){
+            for(int u=1;u<=vertex;u++){//para cada vertice do grafo
                 
-        	    if(nota[u]=='B'){
-        		    if(hasB){
-				existe=grafo.BFS(hasB,u);	    
-				hasB=0;
-					   
-				}
+        	    if(nota[u]=='B'){//se a nota for b
+        		    if(hasB){//segundo b encontrado
+        		    	if(grafo.BFS(hasB,u)){
+        		    		grafo.varinhaMagica(hasB,u);
+						}	    
+						hasB=0; 
+					}
     			    else{
-    				    hasB=u;
-			    }
+    				    hasB=u;//primeiro b encontrado
+			    	}
+				}
+		    }
+			for(int u=1;u<=vertex;u++){
+				if(nota[u]=='B'){
+					existe=false;
+				}
 			}
-		    }
-		    if(existe==1){
-		        cout<<"Y"<<endl;
-		    }
-		    else{
-			    cout<<"N"<<endl;
-		    }
-        }
+			if(existe==true){
+				cout<<"Y"<<endl;
+			}
+			else{
+				cout<<"N"<<endl;
+			}
+        }//se for impar
         else{
 			cout<<"N"<<endl;
 		}
     }
     return 0;
 }
-
