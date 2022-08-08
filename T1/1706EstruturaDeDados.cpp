@@ -17,7 +17,7 @@ int INF = numeric_limits<int>::max();
 bool possivel;
 
 //*************** FILA ****************
-//Nó da fila que aponta para o prox nó
+//NÃ³ da fila que aponta para o prox nÃ³
 typedef struct fila_no{
 	struct fila_no * prox;
 	int dado;
@@ -30,7 +30,7 @@ typedef struct fila_t{
 }fila_t;
 
 fila_t * fila_cria(){
-	/*Inicializa nosso novo objeto do tipo fila_t *  */
+	/*Inicializafila  */
 	fila_t * nova_fila = (fila_t*)malloc(sizeof(fila_t)); 
 	
 	nova_fila -> frente = NULL;
@@ -40,21 +40,19 @@ fila_t * fila_cria(){
 
 void fila_put(fila_t * fila, int val){
 	
-	//Cria nó
+	//Cria nÃ³
 	fila_no * novo_no = (fila_no*)malloc(sizeof(fila_no));
 	novo_no -> dado = val;
 	novo_no -> prox = NULL;
 
 	
-	/*Se a fila estiver vazia,
-	a frente e o final apontam para o mesmo novo elemento*/
 	if (fila -> frente == NULL){
 		fila -> frente = fila -> final = novo_no;
 	}
 	
 	else{
-		/*O que era o último elemento, vai
-		apontar para o novo último elemento*/
+		/*O que era o Ãºltimo elemento, vai
+		apontar para o novo Ãºltimo elemento*/
 		fila -> final -> prox = novo_no;
 		
 		/*O novo elemento vai ser o final da fila*/
@@ -64,24 +62,21 @@ void fila_put(fila_t * fila, int val){
 }
 
 int fila_pop(fila_t * fila){
-	/*Prossiga apenas se realmente tiver objetos na fila*/
+	
 	if (fila -> frente){
 
 
-		/*Armazena o dado do objeto a ser removido*/
-		int val = fila -> frente -> dado;
 		
-		/*Precisamos armazenar o endereço do primeiro elemento 
-		porque vamos mudar o ponteiro fila -> frente, mas
-		precisamos liberar o primeio elemento com free() */
+		int val = fila -> frente -> dado;
+	
 		fila_no * temp = fila -> frente;
 		
-		/*A fila anda...*/				
+						
 		fila -> frente = fila -> frente -> prox;
 		free(temp);
 		return val;
 	}
-	/*Avise se o ponteiro for NULL*/
+	
 	return -1;
 }
 
@@ -240,7 +235,7 @@ int main()
 			    	}
 				}
 		    }
-			for(int u=1;u<=vertex;u++){//se todas as notas são A
+			for(int u=1;u<=vertex;u++){//se todas as notas sÃ£o A
 				if(nota[u]=='B'){
 					existe=false;
 				}
