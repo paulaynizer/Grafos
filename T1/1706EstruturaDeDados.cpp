@@ -1,5 +1,3 @@
-#include <cstdio>
-#include <algorithm>
 #include <iostream>
 #include <vector>
 #include <limits>
@@ -10,14 +8,13 @@
 using namespace std;
 
 enum Cor {WHITE,GRAY,BLACK};
-int color[1001], d[1001], p[1001], f[1001],vertex, edge;
+int color[1001], d[1001], p[1001], f[1001],vertex;
 char nota[1001];
-int NIL = numeric_limits<int>::min();
-int INF = numeric_limits<int>::max();
-bool possivel;
+int NIL = 0;
+int INF = -1;
 
 
-
+//bfs para verificar se existe caminho entre s e k
 bool BFS(vector<int> adj[], int s, int k){
     if (s== k){
                 return true;
@@ -29,7 +26,7 @@ bool BFS(vector<int> adj[], int s, int k){
     }
 
     color[s] = GRAY;
-    d[s] = 0;
+    d[s] = INF;
     p[s] = NIL;
 
     queue<int> Q; Q.push(s);
@@ -39,10 +36,7 @@ bool BFS(vector<int> adj[], int s, int k){
         int u = Q.front(); Q.pop();
         
         for(int v=0; v<adj[u].size(); v++) {
-            if (v== k){
-                //cout<<"entraaq"<<endl;
-                return true;
-            }
+            
             if(color[adj[u][v]] == WHITE) {
                 if (adj[u][v]== k){
                     //cout<<"entraaq"<<endl;
@@ -60,7 +54,7 @@ bool BFS(vector<int> adj[], int s, int k){
     return false;
 }
 bool existeCaminho(vector<int> adj[], char nota[]){
-    int hasB;
+    int hasB=0;
     for(int u=1;u<=vertex;u++){
         //para cada vertice do grafo
                 
@@ -103,16 +97,17 @@ int main()
         vector<int> adj[vertex+1];
         char notas[1001];
         int u, v;
-        int hasB=0;
         int cont=0;
+        
+        //le nota
         for(int i=1;i<=vertex;i++){
             cin>>nota[i];
         }
-        //
+        //le e adiciona aresta
         for(int i =1;i<=m;i++){
             cin>>u>>v;
             adj[u].push_back(v);
-            adj[v].push_back(u);
+            adj[v].push_back(u);//grafo não direcionado
         }
       	//conta a quantidade de b
         for(int u=1;u<=vertex;u++){
